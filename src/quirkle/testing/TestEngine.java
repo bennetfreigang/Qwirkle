@@ -20,13 +20,13 @@ public final class TestEngine {
     private TestEngine() {}
 
     /**
-     * Entry point: runs all tests of {@code ScoreCalculatorTest} and {@code PlacementValidatorTest}
+     * Entry point: runs all tests of the registered test classes
      * and exits with a non-zero status code if at least one test failed.
      */
     public static void main(String[] args) {
         boolean allPassed = run(
                 quirkle.game.gameplay.board.ScoreCalculatorTest.class,
-                quirkle.game.gameplay.board.PlacementValidatorTest.class,
+                quirkle.game.gameplay.board.BoardTest.class,
                 quirkle.game.gameplay.GameTest.class);
         if (!allPassed) {
             System.exit(1);

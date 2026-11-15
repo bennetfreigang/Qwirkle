@@ -164,7 +164,7 @@ public class Board {
     /**
      * Commits all pending tiles and returns the points scored.
      *
-     * @throws IllegalStateException if a pending tile's position is already occupied
+     * @throws IllegalStateException if the pending placement is illegal
      */
     public int commitPendingTiles() {
         PlacementResult result = PlacementValidator.checkPendingTilePlacement(placedTiles, pendingTiles);
@@ -185,14 +185,19 @@ public class Board {
      * @return {@link PlacementResult#LEGAL}, or the rule that would reject the placement
      */
     public PlacementResult checkPlacement(Position position, Tile tile) {
-        return PlacementValidator.checkTilePlacement(placedTiles, pendingTiles, position, tile);
+        if (placedTiles.containsKey(position) || pendingTiles.containsKey(position)) {
+            return PlacementResult.POSITION_OCCUPIED;
+        }
+
+        Map<Position, Tile> candidate = new HashMap<>(pendingTiles);
+        candidate.put(position, tile);
+        return PlacementValidator.checkPendingTilePlacement(placedTiles, candidate);
     }
 
     /**
      * @return {@link PlacementResult#LEGAL} if the tiles staged so far could be committed, or the rule that stops them
      */
     public PlacementResult checkPendingPlacement() {
-        if (pendingTiles.isEmpty()) return PlacementResult.LEGAL;
         return PlacementValidator.checkPendingTilePlacement(placedTiles, pendingTiles);
     }
 
