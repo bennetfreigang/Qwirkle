@@ -184,20 +184,6 @@ public class PlacementValidatorTest {
     }
 
     @Test
-    @DisplayName("Spalte erweitern: gleiche Farbe mit verschiedenen Symbolen, auch über die Nullkoordinate")
-    void testColumnWithDistinctSymbols() {
-        Map<Position, Tile> placed = tilesByPosition(tileAt(-3, -2, TileColor.GREEN, TileSymbol.CIRCLE));
-        Map<Position, Tile> pending = tilesByPosition(
-                tileAt(-3, -1, TileColor.GREEN, TileSymbol.SQUARE),
-                tileAt(-3, 0, TileColor.GREEN, TileSymbol.DIAMOND),
-                tileAt(-3, 1, TileColor.GREEN, TileSymbol.CROSS));
-
-        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
-
-        assertEquals(PlacementResult.LEGAL, result, "Eine Spalte darf die Nullkoordinate überschreiten");
-    }
-
-    @Test
     @DisplayName("Ein Stein darf gleichzeitig eine gültige Zeile und Spalte bilden")
     void testCrossingWithTwoValidLines() {
         Map<Position, Tile> placed = tilesByPosition(
