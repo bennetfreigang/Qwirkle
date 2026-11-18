@@ -18,9 +18,9 @@ public class PlacementValidatorTest {
     void testEmptyPlacementOnExistingBoard() {
         Map<Position, Tile> placed = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, tilesByPosition());
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, tilesByPosition());
 
-        assertEquals(PlacementResult.LEGAL, actual, "Ohne neue Steine bleibt das Brett gültig");
+        assertEquals(PlacementResult.LEGAL, result, "Ohne neue Steine bleibt das Brett gültig");
     }
 
     @Test
@@ -28,9 +28,9 @@ public class PlacementValidatorTest {
     void testFirstMoveWithSingleTile() {
         Map<Position, Tile> pending = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(tilesByPosition(), pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(tilesByPosition(), pending);
 
-        assertEquals(PlacementResult.LEGAL, actual, "Ein einzelner Stein ist als erster Zug gültig");
+        assertEquals(PlacementResult.LEGAL, result, "Ein einzelner Stein ist als erster Zug gültig");
     }
 
     @Test
@@ -39,9 +39,9 @@ public class PlacementValidatorTest {
         Map<Position, Tile> placed = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
         Map<Position, Tile> pending = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.SQUARE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.POSITION_OCCUPIED, actual, "Ein vorhandener Stein darf nicht überschrieben werden");
+        assertEquals(PlacementResult.POSITION_OCCUPIED, result, "Ein vorhandener Stein darf nicht überschrieben werden");
     }
 
     @Test
@@ -52,9 +52,9 @@ public class PlacementValidatorTest {
                 tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE),
                 tileAt(1, 1, TileColor.RED, TileSymbol.SQUARE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.NOT_IN_ONE_LINE, actual, "Diagonal liegende Steine ohne gemeinsame Zeile/Spalte sind ungültig");
+        assertEquals(PlacementResult.NOT_IN_ONE_LINE, result, "Diagonal liegende Steine ohne gemeinsame Zeile/Spalte sind ungültig");
     }
 
     @Test
@@ -65,9 +65,9 @@ public class PlacementValidatorTest {
                 tileAt(1, 1, TileColor.RED, TileSymbol.SQUARE),
                 tileAt(2, 1, TileColor.RED, TileSymbol.DIAMOND));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.NOT_CONNECTED_TO_BOARD, actual, "Neue Steine, die keinen vorhandenen Stein berühren, sind ungültig");
+        assertEquals(PlacementResult.NOT_CONNECTED_TO_BOARD, result, "Neue Steine, die keinen vorhandenen Stein berühren, sind ungültig");
     }
 
     @Test
@@ -78,9 +78,9 @@ public class PlacementValidatorTest {
                 tileAt(1, 0, TileColor.BLUE, TileSymbol.CIRCLE),
                 tileAt(2, 0, TileColor.RED, TileSymbol.CIRCLE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.INVALID_LINE, actual, "Eine doppelt vorkommende Farbe in der Reihe ist ungültig");
+        assertEquals(PlacementResult.INVALID_LINE, result, "Eine doppelt vorkommende Farbe in der Reihe ist ungültig");
     }
 
     @Test
@@ -91,9 +91,9 @@ public class PlacementValidatorTest {
                 tileAt(1, 0, TileColor.RED, TileSymbol.SQUARE),
                 tileAt(2, 0, TileColor.BLUE, TileSymbol.SQUARE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.INVALID_LINE, actual, "Eine Reihe muss durchgehend die gleiche Farbe ODER das gleiche Symbol haben");
+        assertEquals(PlacementResult.INVALID_LINE, result, "Eine Reihe muss durchgehend die gleiche Farbe ODER das gleiche Symbol haben");
     }
 
     @Test
@@ -107,9 +107,9 @@ public class PlacementValidatorTest {
                 tileAt(4, 0, TileColor.RED, TileSymbol.STAR));
         Map<Position, Tile> pending = tilesByPosition(tileAt(5, 0, TileColor.RED, TileSymbol.CROSS));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.LEGAL, actual, "Eine vollständige Reihe aus genau sechs Steinen ist gültig");
+        assertEquals(PlacementResult.LEGAL, result, "Eine vollständige Reihe aus genau sechs Steinen ist gültig");
     }
 
     @Test
@@ -125,9 +125,9 @@ public class PlacementValidatorTest {
                 tileAt(5, 0, TileColor.RED, TileSymbol.CROSS),
                 tileAt(6, 0, TileColor.RED, TileSymbol.CIRCLE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.INVALID_LINE, actual, "Eine Reihe mit mehr als sechs Steinen ist ungültig");
+        assertEquals(PlacementResult.INVALID_LINE, result, "Eine Reihe mit mehr als sechs Steinen ist ungültig");
     }
 
     @Test
@@ -138,9 +138,9 @@ public class PlacementValidatorTest {
                 tileAt(1, 0, TileColor.RED, TileSymbol.SQUARE),
                 tileAt(3, 0, TileColor.RED, TileSymbol.DIAMOND));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.LINE_HAS_GAP, actual, "Neue Steine mit einer Lücke dazwischen sind ungültig");
+        assertEquals(PlacementResult.LINE_HAS_GAP, result, "Neue Steine mit einer Lücke dazwischen sind ungültig");
     }
 
     @Test
@@ -151,9 +151,9 @@ public class PlacementValidatorTest {
                 tileAt(0, 1, TileColor.RED, TileSymbol.SQUARE),
                 tileAt(0, 3, TileColor.RED, TileSymbol.DIAMOND));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.LINE_HAS_GAP, actual, "Neue Steine mit einer Lücke in der Spalte sind ungültig");
+        assertEquals(PlacementResult.LINE_HAS_GAP, result, "Neue Steine mit einer Lücke in der Spalte sind ungültig");
     }
 
     @Test
@@ -164,9 +164,9 @@ public class PlacementValidatorTest {
                 tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE),
                 tileAt(2, 0, TileColor.RED, TileSymbol.DIAMOND));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.LINE_HAS_GAP, actual, "Ein bereits liegender Stein trennt die beiden Steine");
+        assertEquals(PlacementResult.LINE_HAS_GAP, result, "Ein bereits liegender Stein trennt die beiden Steine");
     }
 
     @Test
@@ -178,9 +178,9 @@ public class PlacementValidatorTest {
                 tileAt(0, -3, TileColor.BLUE, TileSymbol.CIRCLE),
                 tileAt(1, -3, TileColor.RED, TileSymbol.CIRCLE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.LEGAL, actual, "Ein gültiger erster Zug braucht keinen Anschluss an vorhandene Steine");
+        assertEquals(PlacementResult.LEGAL, result, "Ein gültiger erster Zug braucht keinen Anschluss an vorhandene Steine");
     }
 
     @Test
@@ -192,9 +192,9 @@ public class PlacementValidatorTest {
                 tileAt(-3, 0, TileColor.GREEN, TileSymbol.DIAMOND),
                 tileAt(-3, 1, TileColor.GREEN, TileSymbol.CROSS));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.LEGAL, actual, "Eine Spalte darf die Nullkoordinate überschreiten");
+        assertEquals(PlacementResult.LEGAL, result, "Eine Spalte darf die Nullkoordinate überschreiten");
     }
 
     @Test
@@ -206,9 +206,9 @@ public class PlacementValidatorTest {
                 tileAt(0, -1, TileColor.BLUE, TileSymbol.CIRCLE));
         Map<Position, Tile> pending = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.LEGAL, actual, "Am Schnittpunkt müssen beide Reihen gültig sein");
+        assertEquals(PlacementResult.LEGAL, result, "Am Schnittpunkt müssen beide Reihen gültig sein");
     }
 
     @Test
@@ -220,9 +220,9 @@ public class PlacementValidatorTest {
                 tileAt(0, -1, TileColor.BLUE, TileSymbol.CIRCLE));
         Map<Position, Tile> pending = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.DIAMOND));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.INVALID_LINE, actual, "Eine gültige Zeile gleicht eine ungültige Spalte nicht aus");
+        assertEquals(PlacementResult.INVALID_LINE, result, "Eine gültige Zeile gleicht eine ungültige Spalte nicht aus");
     }
 
     @Test
@@ -234,9 +234,9 @@ public class PlacementValidatorTest {
                 tileAt(0, -1, TileColor.BLUE, TileSymbol.CIRCLE));
         Map<Position, Tile> pending = tilesByPosition(tileAt(0, 0, TileColor.GREEN, TileSymbol.CIRCLE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.INVALID_LINE, actual, "Eine gültige Spalte gleicht eine ungültige Zeile nicht aus");
+        assertEquals(PlacementResult.INVALID_LINE, result, "Eine gültige Spalte gleicht eine ungültige Zeile nicht aus");
     }
 
     @Test
@@ -249,9 +249,9 @@ public class PlacementValidatorTest {
                 tileAt(0, 0, TileColor.BLUE, TileSymbol.CIRCLE),
                 tileAt(1, 0, TileColor.BLUE, TileSymbol.DIAMOND));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.INVALID_LINE, actual, "Auch die Querreihen weiterer neuer Steine werden geprüft");
+        assertEquals(PlacementResult.INVALID_LINE, result, "Auch die Querreihen weiterer neuer Steine werden geprüft");
     }
 
     @Test
@@ -265,9 +265,9 @@ public class PlacementValidatorTest {
                 tileAt(2, 0, TileColor.BLUE, TileSymbol.SQUARE));
         Map<Position, Tile> pending = tilesByPosition(tileAt(-1, 0, TileColor.RED, TileSymbol.DIAMOND));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
+        PlacementResult result = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
-        assertEquals(PlacementResult.LEGAL, actual, "Der blaue Stein hinter der Lücke gehört nicht zur roten Reihe");
+        assertEquals(PlacementResult.LEGAL, result, "Der blaue Stein hinter der Lücke gehört nicht zur roten Reihe");
     }
 
     private record Placement(Position position, Tile tile) {}
