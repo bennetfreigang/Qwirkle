@@ -16,9 +16,9 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Ohne neue Steine ist die Platzierung gültig")
     void testEmptyPlacementOnExistingBoard() {
-        Map<Position, Tile> placed = tilesOf(at(0, 0, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> placed = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, tilesOf());
+        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, tilesByPosition());
 
         assertEquals(PlacementResult.LEGAL, actual, "Ohne neue Steine bleibt das Brett gültig");
     }
@@ -26,9 +26,9 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Der erste Zug darf aus einem einzelnen Stein bestehen")
     void testFirstMoveWithSingleTile() {
-        Map<Position, Tile> pending = tilesOf(at(0, 0, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> pending = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
 
-        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(tilesOf(), pending);
+        PlacementResult actual = PlacementValidator.checkPendingTilePlacement(tilesByPosition(), pending);
 
         assertEquals(PlacementResult.LEGAL, actual, "Ein einzelner Stein ist als erster Zug gültig");
     }
@@ -36,8 +36,8 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Eine bereits belegte Position wird abgelehnt")
     void testPositionAlreadyOccupied() {
-        Map<Position, Tile> placed = tilesOf(at(0, 0, TileColor.RED, TileSymbol.CIRCLE));
-        Map<Position, Tile> pending = tilesOf(at(0, 0, TileColor.RED, TileSymbol.SQUARE));
+        Map<Position, Tile> placed = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> pending = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.SQUARE));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -47,10 +47,10 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Neue Steine müssen in einer gemeinsamen Zeile oder Spalte liegen")
     void testPendingTilesNotAligned() {
-        Map<Position, Tile> placed = tilesOf();
-        Map<Position, Tile> pending = tilesOf(
-                at(0, 0, TileColor.RED, TileSymbol.CIRCLE),
-                at(1, 1, TileColor.RED, TileSymbol.SQUARE));
+        Map<Position, Tile> placed = tilesByPosition();
+        Map<Position, Tile> pending = tilesByPosition(
+                tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE),
+                tileAt(1, 1, TileColor.RED, TileSymbol.SQUARE));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -60,10 +60,10 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Eine diagonale Berührung verbindet den Zug nicht mit dem Brett")
     void testDiagonalContactDoesNotConnectToBoard() {
-        Map<Position, Tile> placed = tilesOf(at(0, 0, TileColor.RED, TileSymbol.CIRCLE));
-        Map<Position, Tile> pending = tilesOf(
-                at(1, 1, TileColor.RED, TileSymbol.SQUARE),
-                at(2, 1, TileColor.RED, TileSymbol.DIAMOND));
+        Map<Position, Tile> placed = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> pending = tilesByPosition(
+                tileAt(1, 1, TileColor.RED, TileSymbol.SQUARE),
+                tileAt(2, 1, TileColor.RED, TileSymbol.DIAMOND));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -73,10 +73,10 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Bei gleichem Symbol darf keine Farbe doppelt vorkommen")
     void testRowWithDuplicateColor() {
-        Map<Position, Tile> placed = tilesOf(at(0, 0, TileColor.RED, TileSymbol.CIRCLE));
-        Map<Position, Tile> pending = tilesOf(
-                at(1, 0, TileColor.BLUE, TileSymbol.CIRCLE),
-                at(2, 0, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> placed = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> pending = tilesByPosition(
+                tileAt(1, 0, TileColor.BLUE, TileSymbol.CIRCLE),
+                tileAt(2, 0, TileColor.RED, TileSymbol.CIRCLE));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -86,10 +86,10 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Paarweise passende Nachbarn reichen für eine gültige Reihe nicht aus")
     void testRowMixingColorAndSymbolInconsistently() {
-        Map<Position, Tile> placed = tilesOf(at(0, 0, TileColor.RED, TileSymbol.CIRCLE));
-        Map<Position, Tile> pending = tilesOf(
-                at(1, 0, TileColor.RED, TileSymbol.SQUARE),
-                at(2, 0, TileColor.BLUE, TileSymbol.SQUARE));
+        Map<Position, Tile> placed = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> pending = tilesByPosition(
+                tileAt(1, 0, TileColor.RED, TileSymbol.SQUARE),
+                tileAt(2, 0, TileColor.BLUE, TileSymbol.SQUARE));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -99,13 +99,13 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Eine Reihe aus sechs verschiedenen Symbolen ist gültig")
     void testRowOfExactlySixTilesIsValid() {
-        Map<Position, Tile> placed = tilesOf(
-                at(0, 0, TileColor.RED, TileSymbol.CIRCLE),
-                at(1, 0, TileColor.RED, TileSymbol.SQUARE),
-                at(2, 0, TileColor.RED, TileSymbol.DIAMOND),
-                at(3, 0, TileColor.RED, TileSymbol.HEXAGON),
-                at(4, 0, TileColor.RED, TileSymbol.STAR));
-        Map<Position, Tile> pending = tilesOf(at(5, 0, TileColor.RED, TileSymbol.CROSS));
+        Map<Position, Tile> placed = tilesByPosition(
+                tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE),
+                tileAt(1, 0, TileColor.RED, TileSymbol.SQUARE),
+                tileAt(2, 0, TileColor.RED, TileSymbol.DIAMOND),
+                tileAt(3, 0, TileColor.RED, TileSymbol.HEXAGON),
+                tileAt(4, 0, TileColor.RED, TileSymbol.STAR));
+        Map<Position, Tile> pending = tilesByPosition(tileAt(5, 0, TileColor.RED, TileSymbol.CROSS));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -115,15 +115,15 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Ein siebter Stein mit wiederholtem Symbol wird abgelehnt")
     void testRowOfSevenTilesIsInvalid() {
-        Map<Position, Tile> placed = tilesOf(
-                at(0, 0, TileColor.RED, TileSymbol.CIRCLE),
-                at(1, 0, TileColor.RED, TileSymbol.SQUARE),
-                at(2, 0, TileColor.RED, TileSymbol.DIAMOND),
-                at(3, 0, TileColor.RED, TileSymbol.HEXAGON),
-                at(4, 0, TileColor.RED, TileSymbol.STAR));
-        Map<Position, Tile> pending = tilesOf(
-                at(5, 0, TileColor.RED, TileSymbol.CROSS),
-                at(6, 0, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> placed = tilesByPosition(
+                tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE),
+                tileAt(1, 0, TileColor.RED, TileSymbol.SQUARE),
+                tileAt(2, 0, TileColor.RED, TileSymbol.DIAMOND),
+                tileAt(3, 0, TileColor.RED, TileSymbol.HEXAGON),
+                tileAt(4, 0, TileColor.RED, TileSymbol.STAR));
+        Map<Position, Tile> pending = tilesByPosition(
+                tileAt(5, 0, TileColor.RED, TileSymbol.CROSS),
+                tileAt(6, 0, TileColor.RED, TileSymbol.CIRCLE));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -133,10 +133,10 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Eine Lücke zwischen neuen Steinen in einer Zeile wird abgelehnt")
     void testPendingTilesWithGapInRow() {
-        Map<Position, Tile> placed = tilesOf(at(0, 0, TileColor.RED, TileSymbol.CIRCLE));
-        Map<Position, Tile> pending = tilesOf(
-                at(1, 0, TileColor.RED, TileSymbol.SQUARE),
-                at(3, 0, TileColor.RED, TileSymbol.DIAMOND));
+        Map<Position, Tile> placed = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> pending = tilesByPosition(
+                tileAt(1, 0, TileColor.RED, TileSymbol.SQUARE),
+                tileAt(3, 0, TileColor.RED, TileSymbol.DIAMOND));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -146,10 +146,10 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Eine Lücke zwischen neuen Steinen in einer Spalte wird abgelehnt")
     void testPendingTilesWithGapInColumn() {
-        Map<Position, Tile> placed = tilesOf(at(0, 0, TileColor.RED, TileSymbol.CIRCLE));
-        Map<Position, Tile> pending = tilesOf(
-                at(0, 1, TileColor.RED, TileSymbol.SQUARE),
-                at(0, 3, TileColor.RED, TileSymbol.DIAMOND));
+        Map<Position, Tile> placed = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> pending = tilesByPosition(
+                tileAt(0, 1, TileColor.RED, TileSymbol.SQUARE),
+                tileAt(0, 3, TileColor.RED, TileSymbol.DIAMOND));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -159,10 +159,10 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Ein vorhandener Stein füllt eine Lücke zwischen neuen Steinen nicht")
     void testPendingTilesAroundAnExistingTile() {
-        Map<Position, Tile> placed = tilesOf(at(1, 0, TileColor.RED, TileSymbol.SQUARE));
-        Map<Position, Tile> pending = tilesOf(
-                at(0, 0, TileColor.RED, TileSymbol.CIRCLE),
-                at(2, 0, TileColor.RED, TileSymbol.DIAMOND));
+        Map<Position, Tile> placed = tilesByPosition(tileAt(1, 0, TileColor.RED, TileSymbol.SQUARE));
+        Map<Position, Tile> pending = tilesByPosition(
+                tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE),
+                tileAt(2, 0, TileColor.RED, TileSymbol.DIAMOND));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -172,11 +172,11 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Erster Zug: gleiche Symbole mit verschiedenen Farben, auch über die Nullkoordinate")
     void testFirstMoveInRowWithDistinctColors() {
-        Map<Position, Tile> placed = tilesOf();
-        Map<Position, Tile> pending = tilesOf(
-                at(-1, -3, TileColor.GREEN, TileSymbol.CIRCLE),
-                at(0, -3, TileColor.BLUE, TileSymbol.CIRCLE),
-                at(1, -3, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> placed = tilesByPosition();
+        Map<Position, Tile> pending = tilesByPosition(
+                tileAt(-1, -3, TileColor.GREEN, TileSymbol.CIRCLE),
+                tileAt(0, -3, TileColor.BLUE, TileSymbol.CIRCLE),
+                tileAt(1, -3, TileColor.RED, TileSymbol.CIRCLE));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -186,11 +186,11 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Spalte erweitern: gleiche Farbe mit verschiedenen Symbolen, auch über die Nullkoordinate")
     void testColumnWithDistinctSymbols() {
-        Map<Position, Tile> placed = tilesOf(at(-3, -2, TileColor.GREEN, TileSymbol.CIRCLE));
-        Map<Position, Tile> pending = tilesOf(
-                at(-3, -1, TileColor.GREEN, TileSymbol.SQUARE),
-                at(-3, 0, TileColor.GREEN, TileSymbol.DIAMOND),
-                at(-3, 1, TileColor.GREEN, TileSymbol.CROSS));
+        Map<Position, Tile> placed = tilesByPosition(tileAt(-3, -2, TileColor.GREEN, TileSymbol.CIRCLE));
+        Map<Position, Tile> pending = tilesByPosition(
+                tileAt(-3, -1, TileColor.GREEN, TileSymbol.SQUARE),
+                tileAt(-3, 0, TileColor.GREEN, TileSymbol.DIAMOND),
+                tileAt(-3, 1, TileColor.GREEN, TileSymbol.CROSS));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -200,11 +200,11 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Ein Stein darf gleichzeitig eine gültige Zeile und Spalte bilden")
     void testCrossingWithTwoValidLines() {
-        Map<Position, Tile> placed = tilesOf(
-                at(-1, 0, TileColor.RED, TileSymbol.SQUARE),
-                at(-1, -1, TileColor.BLUE, TileSymbol.SQUARE),
-                at(0, -1, TileColor.BLUE, TileSymbol.CIRCLE));
-        Map<Position, Tile> pending = tilesOf(at(0, 0, TileColor.RED, TileSymbol.CIRCLE));
+        Map<Position, Tile> placed = tilesByPosition(
+                tileAt(-1, 0, TileColor.RED, TileSymbol.SQUARE),
+                tileAt(-1, -1, TileColor.BLUE, TileSymbol.SQUARE),
+                tileAt(0, -1, TileColor.BLUE, TileSymbol.CIRCLE));
+        Map<Position, Tile> pending = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -214,11 +214,11 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Eine ungültige Spalte wird trotz gültiger Zeile abgelehnt")
     void testCrossingWithInvalidColumn() {
-        Map<Position, Tile> placed = tilesOf(
-                at(-1, 0, TileColor.RED, TileSymbol.SQUARE),
-                at(-1, -1, TileColor.BLUE, TileSymbol.SQUARE),
-                at(0, -1, TileColor.BLUE, TileSymbol.CIRCLE));
-        Map<Position, Tile> pending = tilesOf(at(0, 0, TileColor.RED, TileSymbol.DIAMOND));
+        Map<Position, Tile> placed = tilesByPosition(
+                tileAt(-1, 0, TileColor.RED, TileSymbol.SQUARE),
+                tileAt(-1, -1, TileColor.BLUE, TileSymbol.SQUARE),
+                tileAt(0, -1, TileColor.BLUE, TileSymbol.CIRCLE));
+        Map<Position, Tile> pending = tilesByPosition(tileAt(0, 0, TileColor.RED, TileSymbol.DIAMOND));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -228,11 +228,11 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Eine ungültige Zeile wird trotz gültiger Spalte abgelehnt")
     void testCrossingWithInvalidRow() {
-        Map<Position, Tile> placed = tilesOf(
-                at(-1, 0, TileColor.RED, TileSymbol.SQUARE),
-                at(-1, -1, TileColor.BLUE, TileSymbol.SQUARE),
-                at(0, -1, TileColor.BLUE, TileSymbol.CIRCLE));
-        Map<Position, Tile> pending = tilesOf(at(0, 0, TileColor.GREEN, TileSymbol.CIRCLE));
+        Map<Position, Tile> placed = tilesByPosition(
+                tileAt(-1, 0, TileColor.RED, TileSymbol.SQUARE),
+                tileAt(-1, -1, TileColor.BLUE, TileSymbol.SQUARE),
+                tileAt(0, -1, TileColor.BLUE, TileSymbol.CIRCLE));
+        Map<Position, Tile> pending = tilesByPosition(tileAt(0, 0, TileColor.GREEN, TileSymbol.CIRCLE));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -242,12 +242,12 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Auch die Querreihe eines weiteren neuen Steins muss gültig sein")
     void testMultiplePendingTilesWithInvalidSecondaryLine() {
-        Map<Position, Tile> placed = tilesOf(
-                at(0, -1, TileColor.RED, TileSymbol.CIRCLE),
-                at(1, -1, TileColor.RED, TileSymbol.SQUARE));
-        Map<Position, Tile> pending = tilesOf(
-                at(0, 0, TileColor.BLUE, TileSymbol.CIRCLE),
-                at(1, 0, TileColor.BLUE, TileSymbol.DIAMOND));
+        Map<Position, Tile> placed = tilesByPosition(
+                tileAt(0, -1, TileColor.RED, TileSymbol.CIRCLE),
+                tileAt(1, -1, TileColor.RED, TileSymbol.SQUARE));
+        Map<Position, Tile> pending = tilesByPosition(
+                tileAt(0, 0, TileColor.BLUE, TileSymbol.CIRCLE),
+                tileAt(1, 0, TileColor.BLUE, TileSymbol.DIAMOND));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -257,13 +257,13 @@ public class PlacementValidatorTest {
     @Test
     @DisplayName("Die Reihensuche endet am ersten freien Feld")
     void testGapInBoardSeparatesLines() {
-        Map<Position, Tile> placed = tilesOf(
-                at(0, 0, TileColor.RED, TileSymbol.CIRCLE),
-                at(0, -1, TileColor.GREEN, TileSymbol.CIRCLE),
-                at(1, -1, TileColor.GREEN, TileSymbol.HEXAGON),
-                at(2, -1, TileColor.GREEN, TileSymbol.SQUARE),
-                at(2, 0, TileColor.BLUE, TileSymbol.SQUARE));
-        Map<Position, Tile> pending = tilesOf(at(-1, 0, TileColor.RED, TileSymbol.DIAMOND));
+        Map<Position, Tile> placed = tilesByPosition(
+                tileAt(0, 0, TileColor.RED, TileSymbol.CIRCLE),
+                tileAt(0, -1, TileColor.GREEN, TileSymbol.CIRCLE),
+                tileAt(1, -1, TileColor.GREEN, TileSymbol.HEXAGON),
+                tileAt(2, -1, TileColor.GREEN, TileSymbol.SQUARE),
+                tileAt(2, 0, TileColor.BLUE, TileSymbol.SQUARE));
+        Map<Position, Tile> pending = tilesByPosition(tileAt(-1, 0, TileColor.RED, TileSymbol.DIAMOND));
 
         PlacementResult actual = PlacementValidator.checkPendingTilePlacement(placed, pending);
 
@@ -272,11 +272,11 @@ public class PlacementValidatorTest {
 
     private record Placement(Position position, Tile tile) {}
 
-    private static Placement at(int x, int y, TileColor color, TileSymbol symbol) {
+    private static Placement tileAt(int x, int y, TileColor color, TileSymbol symbol) {
         return new Placement(new Position(x, y), new Tile(color, symbol));
     }
 
-    private static Map<Position, Tile> tilesOf(Placement... placements) {
+    private static Map<Position, Tile> tilesByPosition(Placement... placements) {
         Map<Position, Tile> tiles = new LinkedHashMap<>();
         for (Placement placement : placements) {
             tiles.put(placement.position(), placement.tile());
