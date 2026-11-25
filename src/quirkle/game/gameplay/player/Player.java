@@ -33,7 +33,6 @@ public class Player {
     }
 
     public void increaseScore(int points) {
-        AssetManager.playSound("gameplay/increase_score", 0.08);
         setScore(this.score + points);
     }
 
@@ -55,7 +54,6 @@ public class Player {
     public void refillHand(TileBag tileBag) {
         int cardsToPull = HAND_SIZE - hand.size();
         hand.addAll(tileBag.drawTiles(cardsToPull));
-        if (cardsToPull > 0) AssetManager.playSound("gameplay/draw",0.15);
     }
 
     /** @return if this exact tile instance is on the player's rack */

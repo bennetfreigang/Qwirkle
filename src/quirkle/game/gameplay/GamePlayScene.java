@@ -191,18 +191,28 @@ public class GamePlayScene extends Scene {
     }
 
     private void endTurn() {
-        try {
-            int points = game.endTurn();
-            tileRack.clearSelection();
-            turnScorePopup.show(points);
+        int tilesBefore = game.getTileBag().getSize();
+        int points;
 
-            if (game.isOver()) {
-                SceneManager.setScene(new EndGameScene(game));
-                AssetManager.playSound("ingameplay scene endturn",1.0);
-            }
+        try {
+            points = game.endTurn();
         } catch (IllegalStateException e) {
-            // Zug ist noch nicht abschließbar (z.B. kein Stein gelegt) -> Eingabe wird ignoriert
-            EngineConfig.message(e.getMessage(), getClass().getSimpleName(), EngineConfig.messageType.INFO);
+            EngineConfig.message(e.getMessage(), getClass().getSimpleName(),
+                    EngineConfig.messageType.INFO);
+            return;
+        }
+
+        AssetManager.playSound("gameplay/increase_score", 0.08);
+        if (game.getTileBag().getSize() < tilesBefore) {
+            AssetManager.playSound("gameplay/draw", 0.15);
+        }
+
+        tileRack.clearSelection();
+        turnScorePopup.show(points);
+
+        if (game.isOver()) {
+            SceneManager.setScene(new EndGameScene(game));
+            AssetManager.playSound("ingameplay scene endturn", 1.0);
         }
     }
 }
