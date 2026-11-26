@@ -5,6 +5,7 @@ import quirkle.game.gameplay.board.Board;
 import quirkle.game.gameplay.board.Position;
 import quirkle.game.gameplay.player.Player;
 import quirkle.game.gameplay.tiles.Tile;
+import quirkle.game.gameplay.tiles.TileAttribute;
 import quirkle.game.gameplay.tiles.TileColor;
 import quirkle.game.gameplay.tiles.TileSymbol;
 
@@ -24,15 +25,17 @@ public final class DebugPrompts {
      */
     public static Tile readTile(String what) {
         DebugConsole.println(what + ":");
-        DebugConsole.println("  colors: " + colorLegend());
-        DebugConsole.println("  symbols: " + symbolLegend());
+        // colorLegend() / symbolLegend() methods (DRY)
+        DebugConsole.println("  colors: " + formatLegend(TileColor.values()));
+        DebugConsole.println("  symbols: " + formatLegend(TileSymbol.values()));
 
         while (true) {
             String input = DebugConsole.readLine("  tile (e.g. RQ)").toUpperCase();
 
             if (input.length() == 2) {
-                TileColor color = colorFromLetter(input.charAt(0));
-                TileSymbol symbol = symbolFromLetter(input.charAt(1));
+                // colorFromLetter() / symbolFromLetter() methods (DRY)
+                TileColor color = fromShortCode(TileColor.values(), input.charAt(0));
+                TileSymbol symbol = fromShortCode(TileSymbol.values(), input.charAt(1));
                 if (color != null && symbol != null) return new Tile(color, symbol);
             }
 
@@ -104,11 +107,11 @@ public final class DebugPrompts {
 
     /**
      * @return the tile as two letters, e.g. "RC" for a red circle, or "-" for null
-     * @note symbols have their own letters because SQUARE and STAR start with the same one
      */
     public static String shortFormat(Tile tile) {
         if (tile == null) return NO_TILE;
-        return "" + tile.getColor().name().charAt(0) + symbolLetter(tile.getSymbol());
+        // short codes directly from TileAttribute
+        return "" + tile.getColor().shortCode() + tile.getSymbol().shortCode();
     }
 
     /** @return the hand in one line with slot numbers */
@@ -123,50 +126,23 @@ public final class DebugPrompts {
         return line.toString();
     }
 
-    /** @return the letter used for a symbol */
-    private static char symbolLetter(TileSymbol symbol) {
-        return switch (symbol) {
-            case CIRCLE -> 'C';
-            case SQUARE -> 'Q';
-            case DIAMOND -> 'D';
-            case HEXAGON -> 'H';
-            case STAR -> 'S';
-            case CROSS -> 'X';
-        };
-    }
+    // replaced symbolLetter(), colorLegend(), symbolLegend(), colorFromLetter(), and symbolFromLetter()
+    // with two generic TileAttribute helpers (OCP + DRY)
 
-    /** @return e.g. "R=RED  Y=YELLOW ..." */
-    private static String colorLegend() {
+    /** @return e.g. "R=RED  Y=YELLOW ..." for any {@link TileAttribute} enum values */
+    private static <E extends Enum<E> & TileAttribute> String formatLegend(E[] values) {
         StringBuilder legend = new StringBuilder();
-        for (TileColor color : TileColor.values()) {
+        for (E value : values) {
             if (legend.length() > 0) legend.append("  ");
-            legend.append(color.name().charAt(0)).append("=").append(color.name());
+            legend.append(value.shortCode()).append("=").append(value.name());
         }
         return legend.toString();
     }
 
-    /** @return same as colorLegend but for the symbols */
-    private static String symbolLegend() {
-        StringBuilder legend = new StringBuilder();
-        for (TileSymbol symbol : TileSymbol.values()) {
-            if (legend.length() > 0) legend.append("  ");
-            legend.append(symbolLetter(symbol)).append("=").append(symbol.name());
-        }
-        return legend.toString();
-    }
-
-    /** @return the color for a letter, or null */
-    private static TileColor colorFromLetter(char letter) {
-        for (TileColor color : TileColor.values()) {
-            if (color.name().charAt(0) == letter) return color;
-        }
-        return null;
-    }
-
-    /** @return the symbol for a letter, or null */
-    private static TileSymbol symbolFromLetter(char letter) {
-        for (TileSymbol symbol : TileSymbol.values()) {
-            if (symbolLetter(symbol) == letter) return symbol;
+    /** @return the matching attribute for {@code code}, or null */
+    private static <E extends Enum<E> & TileAttribute> E fromShortCode(E[] values, char code) {
+        for (E value : values) {
+            if (value.shortCode() == code) return value;
         }
         return null;
     }
